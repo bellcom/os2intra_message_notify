@@ -24,39 +24,45 @@ function os2intra_message_notify_init(){
       ->execute();
 
     // Loop over result
-    foreach($result['node'] as $node_info){
-      $node = node_load($node_info->nid);
+    if(isset($result['node'])){
+      foreach($result['node'] as $node_info){
+        $node = node_load($node_info->nid);
 
-      if(isset($_SESSION['os2intra_messages_shown'])){
-        if(in_array($node->nid, $_SESSION['os2intra_messages_shown'])){
-          continue;
+        // Later we save the nids to the _SESSION variable, so that we dont show
+        // the messages more than once
+        if(isset($_SESSION['os2intra_messages_shown'])){
+          if(in_array($node->nid, $_SESSION['os2intra_messages_shown'])){
+            continue;
+          }
         }
-      }
-      if(strtotime($node->field_os2intra_message_enddate[LANGUAGE_NONE][0]['value']) > time()){
+        if(strtotime($node->field_os2intra_message_enddate[LANGUAGE_NONE][0]['value']) > time()){
 
-        $title = $node->title;
-        $message = $node->body[LANGUAGE_NONE][0]['value'];
-        $sticky = $node->field_os2intra_message_sticky[LANGUAGE_NONE][0]['value'] == 1 ? 'true' :'false';
+          $title = $node->title;
+          $message = $node->body[LANGUAGE_NONE][0]['value'];
+          $sticky = $node->field_os2intra_message_sticky[LANGUAGE_NONE][0]['value'] == 1 ? 'true' :'false';
 
-        $js = <<<EOF
-        var notice = '<div class="notice" data-nid="$node->nid">'
-            + '<div class="notice-body">'
-              + '<h3>$title</h3>'
-              + '<p>$message</p>'
-            + '</div>'
-            + '<div class="notice-bottom">'
-            + '</div>'
-          + '</div>';
-          jQuery(notice).purr({isSticky:$sticky});
+          // Generate js for the notifier and add it as inline js
+          $js = <<<EOF
+          var notice = '<div class="notice" data-nid="$node->nid">'
+              + '<div class="notice-body">'
+                + '<h3>$title</h3>'
+                + '<p>$message</p>'
+              + '</div>'
+              + '<div class="notice-bottom">'
+              + '</div>'
+            + '</div>';
+            jQuery(notice).purr({isSticky:$sticky});
 EOF;
 
-        drupal_add_js($js, array('scope' => 'footer', 'type' => 'inline'));
+          drupal_add_js($js, array('scope' => 'footer', 'type' => 'inline'));
 
-        $_SESSION['os2intra_messages_shown'][] = $node->nid;
+          $_SESSION['os2intra_messages_shown'][] = $node->nid;
 
-      }
-      else {
-        node_delete($node->nid);
+        }
+        else {
+          // If the node is expired we just delete it.
+          node_delete($node->nid);
+        }
       }
     }
   }
