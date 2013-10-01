@@ -1,5 +1,11 @@
 <?php
 /**
+ * @file
+ * Code for the OS2Intra message notify feature.
+ */
+
+include_once 'os2intra_message_notify.features.inc';
+/**
  *
  * @author Thomas Thune Hansen <tth@bellcom.dk>
  * @copyright bellcom open source aps
