@@ -1,0 +1,63 @@
+<?php
+/**
+ *
+ * @author Thomas Thune Hansen <tth@bellcom.dk>
+ * @copyright bellcom open source aps
+ */
+
+function os2intra_message_notify_init(){
+  global $user;
+  if (!path_is_admin(current_path()) && $user->uid) {
+    drupal_add_js(drupal_get_path('module', 'os2intra_message_notify') . '/inc/jquery-purr/jquery.purr.js');
+    drupal_add_js(drupal_get_path('module', 'os2intra_message_notify') . '/js/purr.js', array('scope' => 'footer'));
+    drupal_add_css(drupal_get_path('module', 'os2intra_message_notify') . '/purrcss/purr.css');
+
+    $title = 'en overskrift';
+    $message = 'en besked';
+
+
+    $query = new EntityFieldQuery;
+
+    $result = $query
+      ->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'os2intra_message_notification')
+      ->execute();
+
+    // Loop over result
+    foreach($result['node'] as $node_info){
+      $node = node_load($node_info->nid);
+
+      if(isset($_SESSION['os2intra_messages_shown'])){
+        if(in_array($node->nid, $_SESSION['os2intra_messages_shown'])){
+          continue;
+        }
+      }
+      if(strtotime($node->field_os2intra_message_enddate[LANGUAGE_NONE][0]['value']) > time()){
+
+        $title = $node->title;
+        $message = $node->body[LANGUAGE_NONE][0]['value'];
+        $sticky = $node->field_os2intra_message_sticky[LANGUAGE_NONE][0]['value'] == 1 ? 'true' :'false';
+
+        $js = <<<EOF
+        var notice = '<div class="notice" data-nid="$node->nid">'
+            + '<div class="notice-body">'
+              + '<h3>$title</h3>'
+              + '<p>$message</p>'
+            + '</div>'
+            + '<div class="notice-bottom">'
+            + '</div>'
+          + '</div>';
+          jQuery(notice).purr({isSticky:$sticky});
+EOF;
+
+        drupal_add_js($js, array('scope' => 'footer', 'type' => 'inline'));
+
+        $_SESSION['os2intra_messages_shown'][] = $node->nid;
+
+      }
+      else {
+        node_delete($node->nid);
+      }
+    }
+  }
+}

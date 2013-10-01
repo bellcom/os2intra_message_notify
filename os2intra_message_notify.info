@@ -1,0 +1,9 @@
+name = OS2Intra message notify
+description = Display notification messages to users
+core = 7.x
+; Examples - use at will
+;package = Views
+;dependencies[] = views
+;dependencies[] = panels
+;files[] = example.test
+;configure = admin/config/content/example
