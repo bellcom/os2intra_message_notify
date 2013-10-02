@@ -37,10 +37,6 @@ function os2intra_message_notify_init(){
     drupal_add_js(drupal_get_path('module', 'os2intra_message_notify') . '/js/purr.js', array('scope' => 'footer'));
     drupal_add_css(drupal_get_path('module', 'os2intra_message_notify') . '/purrcss/purr.css');
 
-    $title = 'en overskrift';
-    $message = 'en besked';
-
-
     $query = new EntityFieldQuery;
 
     $result = $query
@@ -67,14 +63,14 @@ function os2intra_message_notify_init(){
         // "To-And" instead of just "To" date
         if(mktime(23, 59, 00, $date_array[1], $date_array[2], $date_array[0] )> time()){
           $title = $node->title;
-          $message = $node->body[LANGUAGE_NONE][0]['value'];
+          $message = preg_replace( "/\r|\n/", "", $node->body[LANGUAGE_NONE][0]['value']);
           $sticky = $node->field_os2intra_message_sticky[LANGUAGE_NONE][0]['value'] == 1 ? 'true' :'false';
 
           // Generate js for the notifier and add it as inline js
           $js = <<<EOF
           var notice = '<div class="notice" data-nid="$node->nid">'
               + '<div class="notice-body">'
-                + '<h3 >$title </h3>'
+                + '<h3>$title</h3>'
                 + '<p> $message </p>'
               + '</div>'
               + '<div class="notice-bottom">'
