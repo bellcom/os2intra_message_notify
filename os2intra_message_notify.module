@@ -6,11 +6,30 @@
 
 include_once 'os2intra_message_notify.features.inc';
 /**
- *
+ * 
  * @author Thomas Thune Hansen <tth@bellcom.dk>
  * @copyright bellcom open source aps
  */
 
+/*
+ * Implements hook_menu()
+ */
+function os2intra_message_notify_menu(){
+  $items = array();
+
+  $items['os2intra_message_notify/ajax'] = array(
+    'title' => 'os2intra message notify ajax callback',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'os2intra_message_notify_ajax_callback',
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+/*
+ * Implements hook_init()
+ */
 function os2intra_message_notify_init(){
   global $user;
   if (!path_is_admin(current_path()) && $user->uid) {
@@ -41,8 +60,12 @@ function os2intra_message_notify_init(){
             continue;
           }
         }
-        if(strtotime($node->field_os2intra_message_enddate[LANGUAGE_NONE][0]['value']) > time()){
-
+        // Explode date string so we can use it with mktime
+        $date_array = explode(' ', $node->field_os2intra_message_enddate[LANGUAGE_NONE][0]['value']);
+        $date_array = explode('-', $date_array[0]);
+        // Make a timestamp for midnight on the expire date. Makes the expire date work as 
+        // "To-And" instead of just "To" date
+        if(mktime(23, 59, 00, $date_array[1], $date_array[2], $date_array[0] )> time()){
           $title = $node->title;
           $message = $node->body[LANGUAGE_NONE][0]['value'];
           $sticky = $node->field_os2intra_message_sticky[LANGUAGE_NONE][0]['value'] == 1 ? 'true' :'false';
@@ -51,8 +74,8 @@ function os2intra_message_notify_init(){
           $js = <<<EOF
           var notice = '<div class="notice" data-nid="$node->nid">'
               + '<div class="notice-body">'
-                + '<h3>$title</h3>'
-                + '<p>$message</p>'
+                + '<h3 >$title </h3>'
+                + '<p> $message </p>'
               + '</div>'
               + '<div class="notice-bottom">'
               + '</div>'
@@ -62,8 +85,6 @@ EOF;
 
           drupal_add_js($js, array('scope' => 'footer', 'type' => 'inline'));
 
-          $_SESSION['os2intra_messages_shown'][] = $node->nid;
-
         }
         else {
           // If the node is expired we just delete it.
@@ -72,4 +93,14 @@ EOF;
       }
     }
   }
+}
+
+/*
+ * Ajax callback for saving the node id in session variable.
+ */
+function os2intra_message_notify_ajax_callback($id){
+  if(is_numeric($id)){
+    $_SESSION['os2intra_messages_shown'][] = $id;
+  }
+  return TRUE;
 }
