@@ -32,7 +32,7 @@ function os2intra_message_notify_menu(){
  */
 function os2intra_message_notify_init(){
   global $user;
-  if (!path_is_admin(current_path()) && $user->uid) {
+  if (!path_is_admin(current_path()) && $user->uid && arg(0) !== 'printpdf') {
     drupal_add_js(drupal_get_path('module', 'os2intra_message_notify') . '/inc/jquery-purr/jquery.purr.js');
     drupal_add_js(drupal_get_path('module', 'os2intra_message_notify') . '/js/purr.js', array('scope' => 'footer'));
     drupal_add_css(drupal_get_path('module', 'os2intra_message_notify') . '/purrcss/purr.css');
