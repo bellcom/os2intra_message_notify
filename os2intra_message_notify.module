@@ -37,28 +37,26 @@ function os2intra_message_notify_init(){
     drupal_add_js(drupal_get_path('module', 'os2intra_message_notify') . '/js/purr.js', array('scope' => 'footer'));
     drupal_add_css(drupal_get_path('module', 'os2intra_message_notify') . '/purrcss/purr.css');
 
-    // If current page is a group. Add those messages which are targeted this group.
-    if ($node = menu_get_object() && $node = node_load($node->nid) && $node->type == "group") {
-      $query = new EntityFieldQuery;
-      $group_notifications = $query
-        ->entityCondition('entity_type', 'node')
-        ->entityCondition('bundle', 'os2intra_message_notification')
-        ->fieldCondition('field_og_group_ref', 'value', $node->nid, '=')
-        ->execute();
-    }
-    // Get all messages which are global.
+    // Get aaaalllll messages.
     $query = new EntityFieldQuery;
-    $global_notifications = $query
+    $result = $query
       ->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'os2intra_message_notification')
-      ->fieldCondition('field_og_group_ref', 'value', 'NULL', '!=')
       ->execute();
 
-    $result = array_merge_recursive($global_notifications, $group_notifications);
+    // Get the current users groups.
+    $user_groups = og_get_groups_by_user();
+
     // Loop over result
     if(isset($result['node'])){
       foreach($result['node'] as $node_info){
+
         $node = node_load($node_info->nid);
+
+        // Only show messages which are global or in a group for the user.
+        if (!empty($node->field_os2intra_message_grp_ref) && !in_array($user_groups, $node->field_os2intra_message_grp_ref[LANGUAGE_NONE]) {
+          continue;
+        }
 
         // Later we save the nids to the _SESSION variable, so that we dont show
         // the messages more than once
