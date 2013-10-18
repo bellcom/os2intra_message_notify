@@ -54,7 +54,7 @@ function os2intra_message_notify_init(){
         $node = node_load($node_info->nid);
 
         // Only show messages which are global or in a group for the user.
-        if (!empty($node->field_os2intra_message_grp_ref) && !in_array($user_groups, $node->field_os2intra_message_grp_ref[LANGUAGE_NONE]) {
+        if (!empty($node->field_os2intra_message_grp_ref) && !in_array($user_groups, $node->field_os2intra_message_grp_ref[LANGUAGE_NONE])) {
           continue;
         }
 
