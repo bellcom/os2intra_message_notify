@@ -62,15 +62,15 @@ function os2intra_message_notify_init(){
 
         // Collect all target nids.
         $targets = array();
-        if (isset($node->field_os2intra_message_grp_ref[LANGUAGE_NONE])) {
-          foreach($node->field_os2intra_message_grp_ref[LANGUAGE_NONE] as $reference) {
+        if (isset($node->og_group_ref[LANGUAGE_NONE])) {
+          foreach($node->og_group_ref[LANGUAGE_NONE] as $reference) {
             if(in_array($reference['target_id'], $user_groups['node'])) {
                     $targets[] = $reference['target_id'];
             }
           }
         }
         // Dont show message if not global or in a user group.
-        if (!empty($node->field_os2intra_message_grp_ref[LANGUAGE_NONE]) && !count($targets)) {
+        if (!empty($node->og_group_ref[LANGUAGE_NONE]) && !count($targets)) {
           continue;
         }
         // Later we save the nids to the _SESSION variable, so that we dont show
