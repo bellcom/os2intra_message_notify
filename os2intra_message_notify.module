@@ -49,7 +49,7 @@ function os2intra_message_notify_init(){
     $result = $query
       ->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'os2intra_message_notification')
-      ->fieldCondition('field_os2intra_message_enddate', 'value', date('Y-m-d') . ' 00:00:00', '>')
+      ->fieldCondition('field_os2intra_message_enddate', 'value', date('Y-m-d') . ' 00:00:00', '>=')
       ->execute();
 
     // Get the current users groups.
@@ -62,9 +62,11 @@ function os2intra_message_notify_init(){
 
         // Collect all target nids.
         $targets = array();
-        foreach($node->field_os2intra_message_grp_ref[LANGUAGE_NONE] as $reference) {
-          if(in_array($reference['target_id'], $user_groups['node'])) {
-                  $targets[] = $reference['target_id'];
+        if (isset($node->field_os2intra_message_grp_ref[LANGUAGE_NONE])) {
+          foreach($node->field_os2intra_message_grp_ref[LANGUAGE_NONE] as $reference) {
+            if(in_array($reference['target_id'], $user_groups['node'])) {
+                    $targets[] = $reference['target_id'];
+            }
           }
         }
         // Dont show message if not global or in a user group.
