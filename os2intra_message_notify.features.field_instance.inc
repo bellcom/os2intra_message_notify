@@ -61,7 +61,7 @@ function os2intra_message_notify_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'module' => 'date',
         'settings' => array(
           'format_type' => 'long',
@@ -71,7 +71,7 @@ function os2intra_message_notify_field_default_field_instances() {
           'multiple_to' => '',
         ),
         'type' => 'date_default',
-        'weight' => 2,
+        'weight' => 1,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -107,6 +107,63 @@ function os2intra_message_notify_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-os2intra_message_notification-field_os2intra_message_grp_ref'
+  $field_instances['node-os2intra_message_notification-field_os2intra_message_grp_ref'] = array(
+    'bundle' => 'os2intra_message_notification',
+    'default_value' => NULL,
+    'default_value_function' => '',
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'entityreference',
+        'settings' => array(
+          'link' => FALSE,
+        ),
+        'type' => 'entityreference_label',
+        'weight' => 4,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'display_in_partial_form' => 0,
+    'entity_type' => 'node',
+    'field_name' => 'field_os2intra_message_grp_ref',
+    'label' => 'Gruppe Reference',
+    'required' => 0,
+    'settings' => array(
+      'behaviors' => array(
+        'og_widget' => array(
+          'admin' => array(
+            'widget_type' => 'entityreference_autocomplete',
+          ),
+          'default' => array(
+            'widget_type' => 'options_buttons',
+          ),
+          'status' => TRUE,
+        ),
+        'prepopulate' => array(
+          'status' => 0,
+        ),
+      ),
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'options',
+      'settings' => array(
+        'content_taxonomy_opt_groups' => FALSE,
+      ),
+      'type' => 'options_select',
+      'weight' => 42,
+    ),
+  );
+
   // Exported field_instance: 'node-os2intra_message_notification-field_os2intra_message_sticky'
   $field_instances['node-os2intra_message_notification-field_os2intra_message_sticky'] = array(
     'bundle' => 'os2intra_message_notification',
@@ -120,10 +177,9 @@ function os2intra_message_notify_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'list',
         'settings' => array(),
-        'type' => 'list_default',
-        'weight' => 1,
+        'type' => 'hidden',
+        'weight' => 2,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -153,6 +209,7 @@ function os2intra_message_notify_field_default_field_instances() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
+  t('Gruppe Reference');
   t('Klæbrig');
   t('Vis indtil');
   t('Vælg, hvis beskeden ikke skal forsvinde af sig selv, men brugeren skal tage stilling til at lukke den.');
