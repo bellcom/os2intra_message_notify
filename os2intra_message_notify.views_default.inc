@@ -67,6 +67,17 @@ function os2intra_message_notify_views_default_views() {
 
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block');
+  $translatables['os2intra_message_notifications'] = array(
+    t('Master'),
+    t('OS2Intra message notifications'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort by'),
+    t('Asc'),
+    t('Desc'),
+    t('Block'),
+  );
   $export['os2intra_message_notifications'] = $view;
 
   return $export;
