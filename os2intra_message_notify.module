@@ -81,7 +81,7 @@ function os2intra_message_notify_init(){
           }
         }
         $title = $node->title;
-        $message = preg_replace( "/\r|\n/", "", $node->body[LANGUAGE_NONE][0]['value']);
+        $message = isset($node->body[LANGUAGE_NONE][0]['value'])? preg_replace( "/\r|\n/", "", $node->body[LANGUAGE_NONE][0]['value']) : '';
         $sticky = $node->field_os2intra_message_sticky[LANGUAGE_NONE][0]['value'] == 1 ? 'true' :'false';
 
         // Generate js for the notifier and add it as inline js
