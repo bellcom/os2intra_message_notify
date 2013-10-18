@@ -6,7 +6,7 @@
 
 include_once 'os2intra_message_notify.features.inc';
 /**
- * 
+ *
  * @author Thomas Thune Hansen <tth@bellcom.dk>
  * @copyright bellcom open source aps
  */
@@ -44,18 +44,32 @@ function os2intra_message_notify_init(){
     drupal_add_js(drupal_get_path('module', 'os2intra_message_notify') . '/js/purr.js', array('scope' => 'footer'));
     drupal_add_css(drupal_get_path('module', 'os2intra_message_notify') . '/purrcss/purr.css');
 
+    // Get aaaalllll messages.
     $query = new EntityFieldQuery;
-
     $result = $query
       ->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'os2intra_message_notification')
       ->execute();
 
+    // Get the current users groups.
+    $user_groups = og_get_groups_by_user();
     // Loop over result
     if(isset($result['node'])){
       foreach($result['node'] as $node_info){
+
         $node = node_load($node_info->nid);
 
+	// Collect all target nids.
+	$targets = array();
+	foreach($node->field_os2intra_message_grp_ref[LANGUAGE_NONE] as $reference) {
+	  if(in_array($reference['target_id'], $user_groups['node'])) {
+            $targets[] = $reference['target_id'];
+	  }
+	}
+        // Dont show message if not global or in a user group.
+        if (!empty($node->field_os2intra_message_grp_ref[LANGUAGE_NONE]) && !count($targets)) {
+          continue;
+	}
         // Later we save the nids to the _SESSION variable, so that we dont show
         // the messages more than once
         if(isset($_SESSION['os2intra_messages_shown'])){
@@ -66,7 +80,7 @@ function os2intra_message_notify_init(){
         // Explode date string so we can use it with mktime
         $date_array = explode(' ', $node->field_os2intra_message_enddate[LANGUAGE_NONE][0]['value']);
         $date_array = explode('-', $date_array[0]);
-        // Make a timestamp for midnight on the expire date. Makes the expire date work as 
+        // Make a timestamp for midnight on the expire date. Makes the expire date work as
         // "To-And" instead of just "To" date
         if(mktime(23, 59, 00, $date_array[1], $date_array[2], $date_array[0] )> time()){
           $title = $node->title;
