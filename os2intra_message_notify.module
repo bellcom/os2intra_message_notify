@@ -51,7 +51,7 @@ function os2intra_message_notify_init(){
     $global_notifications = $query
       ->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'os2intra_message_notification')
-      ->fieldCondition('field_og_group_ref', 'value', 'NULL', '!=');
+      ->fieldCondition('field_og_group_ref', 'value', 'NULL', '!=')
       ->execute();
 
     $result = array_merge_recursive($global_notifications, $group_notifications);
