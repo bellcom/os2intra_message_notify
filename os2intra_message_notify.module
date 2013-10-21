@@ -62,7 +62,7 @@ function os2intra_message_notify_init(){
 
         // Collect all target nids.
         $targets = array();
-        if(isset($node->field_os2intra_message_grp_ref[LANGUAGE_NONE])) {
+        if (isset($node->field_os2intra_message_grp_ref[LANGUAGE_NONE])) {
           foreach($node->field_os2intra_message_grp_ref[LANGUAGE_NONE] as $reference) {
             if(in_array($reference['target_id'], $user_groups['node'])) {
               $targets[] = $reference['target_id'];
