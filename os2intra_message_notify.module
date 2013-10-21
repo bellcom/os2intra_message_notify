@@ -32,7 +32,14 @@ function os2intra_message_notify_menu(){
  */
 function os2intra_message_notify_init(){
   global $user;
-  if (!path_is_admin(current_path()) && $user->uid && arg(0) !== 'printpdf') {
+
+  $ignore_uris = array(
+    '/media/*',
+    '/printpdf/*',
+  );
+
+  if (!path_is_admin(current_path()) && $user->uid && !drupal_match_path(request_uri(), implode("\n", $ignore_uris))){
+
     drupal_add_js(drupal_get_path('module', 'os2intra_message_notify') . '/inc/jquery-purr/jquery.purr.js');
     drupal_add_js(drupal_get_path('module', 'os2intra_message_notify') . '/js/purr.js', array('scope' => 'footer'));
     drupal_add_css(drupal_get_path('module', 'os2intra_message_notify') . '/purrcss/purr.css');
@@ -42,6 +49,7 @@ function os2intra_message_notify_init(){
     $result = $query
       ->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'os2intra_message_notification')
+      ->fieldCondition('field_os2intra_message_enddate', 'value', date('Y-m-d') . ' 00:00:00', '>=')
       ->execute();
 
     // Get the current users groups.
@@ -62,7 +70,7 @@ function os2intra_message_notify_init(){
           }
         }
         // Dont show message if not global or in a user group.
-        if (!empty($node->field_os2intra_message_grp_ref[LANGUAGE_NONE]) && !count($targets)) {
+        if (!empty($node->og_group_ref[LANGUAGE_NONE]) && !count($targets)) {
           continue;
         }
         // Later we save the nids to the _SESSION variable, so that we dont show
@@ -72,36 +80,24 @@ function os2intra_message_notify_init(){
             continue;
           }
         }
-        // Explode date string so we can use it with mktime
-        $date_array = explode(' ', $node->field_os2intra_message_enddate[LANGUAGE_NONE][0]['value']);
-        $date_array = explode('-', $date_array[0]);
-        // Make a timestamp for midnight on the expire date. Makes the expire date work as
-        // "To-And" instead of just "To" date
-        if(mktime(23, 59, 00, $date_array[1], $date_array[2], $date_array[0] )> time()){
-          $title = $node->title;
-          $message = preg_replace( "/\r|\n/", "", $node->body[LANGUAGE_NONE][0]['value']);
-          $sticky = $node->field_os2intra_message_sticky[LANGUAGE_NONE][0]['value'] == 1 ? 'true' :'false';
+        $title = $node->title;
+        $message = isset($node->body[LANGUAGE_NONE][0]['value'])? preg_replace( "/\r|\n/", "", $node->body[LANGUAGE_NONE][0]['value']) : '';
+        $sticky = $node->field_os2intra_message_sticky[LANGUAGE_NONE][0]['value'] == 1 ? 'true' :'false';
 
-          // Generate js for the notifier and add it as inline js
-          $js = <<<EOF
-          var notice = '<div class="notice" data-nid="$node->nid">'
-              + '<div class="notice-body">'
-                + '<h3>$title</h3>'
-                + '<p> $message </p>'
-              + '</div>'
-              + '<div class="notice-bottom">'
-              + '</div>'
-            + '</div>';
-            jQuery(notice).purr({isSticky:$sticky});
+        // Generate js for the notifier and add it as inline js
+        $js = <<<EOF
+        var notice = '<div class="notice" data-nid="$node->nid">'
+            + '<div class="notice-body">'
+              + '<h3>$title</h3>'
+              + '<p> $message </p>'
+            + '</div>'
+            + '<div class="notice-bottom">'
+            + '</div>'
+          + '</div>';
+          jQuery(notice).purr({isSticky:$sticky});
 EOF;
 
-          drupal_add_js($js, array('scope' => 'footer', 'type' => 'inline'));
-
-        }
-        else {
-          // If the node is expired we just delete it.
-          node_delete($node->nid);
-        }
+        drupal_add_js($js, array('scope' => 'footer', 'type' => 'inline'));
       }
     }
   }
