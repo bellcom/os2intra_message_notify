@@ -31,7 +31,7 @@ function os2intra_message_notify_node_info() {
       'base' => 'node_content',
       'description' => t('Messages to be shown in popup'),
       'has_title' => '1',
-      'title_label' => t('Title'),
+      'title_label' => t('Titel'),
       'help' => '',
     ),
   );
