@@ -42,7 +42,7 @@ function os2intra_message_notify_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_os2intra_message_notification';
-  $strongarm->value = '2';
+  $strongarm->value = '1';
   $export['comment_os2intra_message_notification'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -113,10 +113,15 @@ function os2intra_message_notify_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'language_content_type_os2intra_message_notification';
+  $strongarm->value = '0';
+  $export['language_content_type_os2intra_message_notification'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'menu_options_os2intra_message_notification';
-  $strongarm->value = array(
-    0 => 'main-menu',
-  );
+  $strongarm->value = array();
   $export['menu_options_os2intra_message_notification'] = $strongarm;
 
   $strongarm = new stdClass();

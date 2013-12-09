@@ -25,6 +25,7 @@ features[variable][] = comment_os2intra_message_notification
 features[variable][] = comment_preview_os2intra_message_notification
 features[variable][] = comment_subject_field_os2intra_message_notification
 features[variable][] = field_bundle_settings_node__os2intra_message_notification
+features[variable][] = language_content_type_os2intra_message_notification
 features[variable][] = menu_options_os2intra_message_notification
 features[variable][] = menu_parent_os2intra_message_notification
 features[variable][] = node_options_os2intra_message_notification
