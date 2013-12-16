@@ -88,7 +88,7 @@ function os2intra_message_notify_init(){
         $js = <<<EOF
         var notice = '<div class="notice" data-nid="$node->nid">'
             + '<div class="notice-body">'
-              + '<h3>$title</h3>'
+              + '<h3><a href="/node/$node->nid">$title</a></h3>'
               + '<p> $message </p>'
             + '</div>'
             + '<div class="notice-bottom">'
