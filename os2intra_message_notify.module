@@ -32,7 +32,7 @@ function os2intra_message_notify_menu(){
  */
 function os2intra_message_notify_init(){
   global $user;
-  $last_login =  $user->access;
+  $last_login =  isset($user->access) ? $user->access : "";
   $ignore_uris = array(
     '/media/*',
     '/printpdf/*',
