@@ -62,34 +62,36 @@ function os2intra_message_notify_init(){
 
         $changed = $node->changed;
         // Show node only it is changed after user last login.
-        if ($changed > $last_login) {
+        if ($changed < $last_login) {
+          continue;
+        }
           // Collect all target nids.
-          $targets = array();
-          if (isset($node->og_group_ref[LANGUAGE_NONE])) {
-            foreach($node->og_group_ref[LANGUAGE_NONE] as $reference) {
-              if(in_array($reference['target_id'], $user_groups['node'])) {
-                    $targets[] = $reference['target_id'];
-              }
+        $targets = array();
+        if (isset($node->og_group_ref[LANGUAGE_NONE])) {
+          foreach($node->og_group_ref[LANGUAGE_NONE] as $reference) {
+            if(in_array($reference['target_id'], $user_groups['node'])) {
+                  $targets[] = $reference['target_id'];
             }
           }
-          // Dont show message if not global or in a user group.
-          if (!empty($node->og_group_ref[LANGUAGE_NONE]) && !count($targets)) {
+        }
+        // Dont show message if not global or in a user group.
+        if (!empty($node->og_group_ref[LANGUAGE_NONE]) && !count($targets)) {
+          continue;
+        }
+        // Later we save the nids to the _SESSION variable, so that we dont show
+        // the messages more than once
+        if(isset($_SESSION['os2intra_messages_shown'])){
+          if(in_array($node->nid, $_SESSION['os2intra_messages_shown'])){
             continue;
           }
-          // Later we save the nids to the _SESSION variable, so that we dont show
-          // the messages more than once
-          if(isset($_SESSION['os2intra_messages_shown'])){
-            if(in_array($node->nid, $_SESSION['os2intra_messages_shown'])){
-              continue;
-            }
-          }
-          $title = $node->title;
-          $message = isset($node->body[LANGUAGE_NONE][0]['value'])? preg_replace( "/\r|\n/", "", $node->body[LANGUAGE_NONE][0]['value']) : '';
-          $sticky = $node->field_os2intra_message_sticky[LANGUAGE_NONE][0]['value'] == 1 ? 'true' :'false';
+        }
+        $title = $node->title;
+        $message = isset($node->body[LANGUAGE_NONE][0]['value'])? preg_replace( "/\r|\n/", "", $node->body[LANGUAGE_NONE][0]['value']) : '';
+        $sticky = $node->field_os2intra_message_sticky[LANGUAGE_NONE][0]['value'] == 1 ? 'true' :'false';
 
-          // Generate js for the notifier and add it as inline js
-          $js = <<<EOF
-          var notice = '<div class="notice" data-nid="$node->nid">'
+        // Generate js for the notifier and add it as inline js
+        $js = <<<EOF
+        var notice = '<div class="notice" data-nid="$node->nid">'
             + '<div class="notice-body">'
               + '<h3><a href="/node/$node->nid">$title</a></h3>'
               + '<p> $message </p>'
@@ -97,11 +99,10 @@ function os2intra_message_notify_init(){
             + '<div class="notice-bottom">'
             + '</div>'
           + '</div>';
-          jQuery(notice).purr({isSticky:$sticky});
+        jQuery(notice).purr({isSticky:$sticky});
 EOF;
 
-          drupal_add_js($js, array('scope' => 'footer', 'type' => 'inline'));
-        }
+        drupal_add_js($js, array('scope' => 'footer', 'type' => 'inline'));
       }
     }
   }
