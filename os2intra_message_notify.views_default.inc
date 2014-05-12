@@ -199,6 +199,7 @@ function os2intra_message_notify_views_default_views() {
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['query']['options']['distinct'] = TRUE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Søg';
   $handler->display->display_options['exposed_form']['options']['reset_button_label'] = 'Gendan';
@@ -261,22 +262,16 @@ function os2intra_message_notify_views_default_views() {
     'multiple_from' => '',
     'multiple_to' => '',
   );
-  /* Felt: Group Nid (excluded) */
-  $handler->display->display_options['fields']['nid']['id'] = 'nid';
-  $handler->display->display_options['fields']['nid']['table'] = 'node';
-  $handler->display->display_options['fields']['nid']['field'] = 'nid';
-  $handler->display->display_options['fields']['nid']['relationship'] = 'og_membership_related_node_group';
-  $handler->display->display_options['fields']['nid']['ui_name'] = 'Group Nid (excluded)';
-  $handler->display->display_options['fields']['nid']['exclude'] = TRUE;
-  /* Felt: Indhold: Title */
-  $handler->display->display_options['fields']['title_field']['id'] = 'title_field';
-  $handler->display->display_options['fields']['title_field']['table'] = 'field_data_title_field';
-  $handler->display->display_options['fields']['title_field']['field'] = 'title_field';
-  $handler->display->display_options['fields']['title_field']['relationship'] = 'og_membership_related_node_group';
-  $handler->display->display_options['fields']['title_field']['label'] = 'Gruppe';
-  $handler->display->display_options['fields']['title_field']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['title_field']['alter']['path'] = 'node/[nid]';
-  $handler->display->display_options['fields']['title_field']['link_to_entity'] = 0;
+  /* Felt: Indhold: Groups */
+  $handler->display->display_options['fields']['og_group_ref']['id'] = 'og_group_ref';
+  $handler->display->display_options['fields']['og_group_ref']['table'] = 'og_membership';
+  $handler->display->display_options['fields']['og_group_ref']['field'] = 'og_group_ref';
+  $handler->display->display_options['fields']['og_group_ref']['label'] = 'Grupper';
+  $handler->display->display_options['fields']['og_group_ref']['type'] = 'og_list_default';
+  $handler->display->display_options['fields']['og_group_ref']['settings'] = array(
+    'link' => 0,
+  );
+  $handler->display->display_options['fields']['og_group_ref']['delta_offset'] = '0';
   /* Sorteringskriterie: Indhold: Oprettelsesdato */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
@@ -347,8 +342,7 @@ function os2intra_message_notify_views_default_views() {
     t('Overskrift'),
     t('Indhold'),
     t('Vis indtil'),
-    t('Nid'),
-    t('Gruppe'),
+    t('Grupper'),
     t('Fritekstsøgning'),
     t('Søg iblandt beskedens titel, indhold eller gruppe.'),
     t('Page'),

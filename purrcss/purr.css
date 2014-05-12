@@ -95,6 +95,13 @@
   color: #aaf;
 }
 
+.notice h3 a, .notice h3 a:link  {
+  color: #fff;
+}
+.notice h3 a:visited  {
+  color: #dedede;
+}
+
 .notice pre {
   margin: 0;
 }
