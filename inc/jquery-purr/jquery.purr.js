@@ -57,7 +57,7 @@
 			var close = document.createElement( 'a' );
 			$( close ).attr(	
 				{
-					className: 'close',
+					class: 'close',
 					href: '#close',
 					innerHTML: 'Close'
 				}
