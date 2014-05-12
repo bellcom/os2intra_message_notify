@@ -32,7 +32,7 @@ function os2intra_message_notify_menu(){
  */
 function os2intra_message_notify_init(){
   global $user;
-  $last_login =  isset($user->access) ? $user->access : "";
+  $last_access =  isset($user->access) ? $user->access : "";
   $ignore_uris = array(
     '/media/*',
     '/printpdf/*',
@@ -61,8 +61,8 @@ function os2intra_message_notify_init(){
         $node = node_load($node_info->nid);
 
         $changed = $node->changed;
-        // Show node only it is changed after user last login.
-        if ($changed < $last_login) {
+        // Show node only it is changed after user last access, drupal session update every 180 sec.
+        if ($changed < $last_access) {
           continue;
         }
           // Collect all target nids.
