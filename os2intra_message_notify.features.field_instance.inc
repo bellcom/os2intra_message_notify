@@ -152,7 +152,12 @@ function os2intra_message_notify_field_default_field_instances() {
   // Exported field_instance: 'node-os2intra_message_notification-og_group_ref'
   $field_instances['node-os2intra_message_notification-og_group_ref'] = array(
     'bundle' => 'os2intra_message_notification',
-    'default_value' => NULL,
+    'default_value' => array(
+      0 => array(
+        'target_id' => 2,
+      ),
+    ),
+    'default_value_function' => '',
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -170,20 +175,15 @@ function os2intra_message_notify_field_default_field_instances() {
         'weight' => 0,
       ),
     ),
+    'display_in_partial_form' => 0,
     'entity_type' => 'node',
     'field_name' => 'og_group_ref',
     'label' => 'Groups audience',
-    'required' => FALSE,
+    'required' => 0,
     'settings' => array(
       'behaviors' => array(
-        'og_widget' => array(
-          'admin' => array(
-            'widget_type' => 'entityreference_autocomplete',
-          ),
-          'default' => array(
-            'widget_type' => 'options_select',
-          ),
-          'status' => TRUE,
+        'prepopulate' => array(
+          'status' => 0,
         ),
       ),
       'user_register_form' => FALSE,
@@ -201,9 +201,14 @@ function os2intra_message_notify_field_default_field_instances() {
       ),
     ),
     'widget' => array(
-      'module' => 'og',
-      'settings' => array(),
-      'type' => 'og_complex',
+      'active' => 1,
+      'module' => 'entityreference',
+      'settings' => array(
+        'match_operator' => 'CONTAINS',
+        'path' => '',
+        'size' => 60,
+      ),
+      'type' => 'entityreference_autocomplete',
       'weight' => 43,
     ),
   );
